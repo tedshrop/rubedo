@@ -7,7 +7,7 @@ from pathlib import Path
 from constants import *
 
 ffmpeg_cmd = [
-    "ffmpeg",
+    f"ffmpeg",
     "-y",
     "-f",
     "v4l2",

@@ -1,21 +1,53 @@
+import sys
 # Connection details for communicating with the printer's moonraker API.
 HOST = '127.0.0.1'
 WS_PORT = 7125
 
 # This will print a calibrated + control pattern and measure the % improvement after tuning
-VALIDATE_RESULTS = True
+VALIDATE_RESULTS = False
 
 # Print settings
 BUILD_PLATE_TEMPERATURE = 110
 HOTEND_TEMPERATURE = 250
 HOTEND_IDLE_TEMP = 200
 TOOL = 0
-# This is where the toolhead moves to indicate that it's done printing the PA pattern.
 FINISHED_X = 80
 FINISHED_Y = 350
+NOZZLE_DIAMETER = 0.6
+ACCELERATION = 3000
+
+# These are the values that are passed in from the command line. If they aren't set, the defaults above are used.
+for arg in sys.argv:
+    if arg.startswith('BED_TEMP='):
+        BUILD_PLATE_TEMPERATURE = arg.split('=')[1]
+        break
+    if arg.startswith('NOZZLE_TEMP='):
+        HOTEND_TEMPERATURE = arg.split('=')[1]
+        break
+    if arg.startswith('VALIDATE='):
+        if arg.split('=')[1].startswith('T'):
+            VALIDATE_RESULTS = True
+        break
+    if arg.startswith('TOOL='):
+        TOOL = arg.split('=')[1]
+        break
+    if arg.startswith('FINISHED_X='):
+        FINISHED_X = arg.split('=')[1]
+        break
+    if arg.startswith('FINISHED_Y='):
+        FINISHED_Y = arg.split('=')[1]
+        break
+    if arg.startswith('NOZZLE_DIAMETER='):
+        NOZZLE_DIAMETER = arg.split('=')[1]
+        break
+    if arg.startswith('ACCELERATION='):
+        ACCELERATION = arg.split('=')[1]
+        break
+
+
+# The area of the bed that the pattern will be printed in.
 AREA_START = (30, 30)
 AREA_END = (320, 180)
-NOZZLE_DIAMETER = 0.6
 
 # Any gcode you want to be sent before the pattern is printed.
 # You could just have this call PRINT_START if you've configured
