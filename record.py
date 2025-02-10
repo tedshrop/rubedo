@@ -14,7 +14,7 @@ ffmpeg_cmd = [
     "-framerate",
     FRAMERATE,
     "-video_size",
-    VIDEO_RESOLUTION,
+    "{VIDEO_WIDTH}x{VIDEO_HEIGHT}",
     "-input_format",
     "mjpeg",
     "-i",
@@ -27,7 +27,6 @@ ffmpeg_cmd = [
 def record_pattern(info: PatternInfo, buffer_distance: float, output_directory: str) -> list:
     send_gcode("STATUS_OFF") # Turn off LEDs
     send_gcode("LASER_ON") # Turn on line laser
-    send_gcode("SET_LED LED=chamber_lights WHITE=0")
     time.sleep(0.5)
 
     lines_start_y = info.lines_start_y()
@@ -57,6 +56,6 @@ def record_pattern(info: PatternInfo, buffer_distance: float, output_directory: 
             time.sleep(FFMPEG_STOP_DELAY)
 
     send_gcode("LASER_OFF")
-    send_gcode("SET_LED LED=chamber_lights WHITE=1")
+    send_gcode("STATUS_STANDBY")
     return video_files
 

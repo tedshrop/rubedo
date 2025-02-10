@@ -1,5 +1,5 @@
 # Connection details for communicating with the printer's moonraker API.
-HOST = '192.168.1.114'
+HOST = '127.0.0.1'
 WS_PORT = 7125
 
 # This will print a calibrated + control pattern and measure the % improvement after tuning
@@ -7,40 +7,43 @@ VALIDATE_RESULTS = True
 
 # Print settings
 BUILD_PLATE_TEMPERATURE = 110
-HOTEND_TEMPERATURE = 255
+HOTEND_TEMPERATURE = 250
 HOTEND_IDLE_TEMP = 200
-
+TOOL = 0
 # This is where the toolhead moves to indicate that it's done printing the PA pattern.
-FINISHED_X = 30
-FINISHED_Y = 250
+FINISHED_X = 80
+FINISHED_Y = 350
+AREA_START = (30, 30)
+AREA_END = (320, 180)
+NOZZLE_DIAMETER = 0.6
 
 # Any gcode you want to be sent before the pattern is printed.
 # You could just have this call PRINT_START if you've configured
 # that for your printer.
 PRINT_START = f"""
-M104 S180; preheat nozzle while waiting for build plate to get to temp
+M104 S{HOTEND_IDLE_TEMP}; preheat nozzle while waiting for build plate to get to temp
 M140 S{BUILD_PLATE_TEMPERATURE};
-G28
-M190 S{BUILD_PLATE_TEMPERATURE};
-QUAD_GANTRY_LEVEL
-CLEAN_NOZZLE
-G28 Z
-M109 S{HOTEND_TEMPERATURE};
-CLEAN_NOZZLE
+MMU_START_SETUP INITIAL_TOOL={TOOL} 
+MMU_START_CHECK;
+START_PRINT  EXTRUDER_TEMP={HOTEND_TEMPERATURE} BED_TEMP={BUILD_PLATE_TEMPERATURE}
+MMU_START_LOAD_INITIAL_TOOL
+START_PRINT_2 AREA_START={AREA_START[0]},{AREA_START[1]} AREA_END={AREA_END[0]},{AREA_END[1]}
+SET_PRINT_STATS_INFO TOTAL_LAYER=1
 """
 
 # Information about the USB camera mounted to the hotend.
 VIDEO_DEVICE = "/dev/video2"
-VIDEO_RESOLUTION = "1280x720"
+VIDEO_WIDTH = "1920"
+VIDEO_HEIGHT = "1080"
 FRAMERATE = "30"
 # The camera's distance from the nozzle.
 # This tells the recording code how to center the line within the camera's field of view.
 # The offsets are in mm.
-CAMERA_OFFSET_X = 28
-CAMERA_OFFSET_Y = 50.2
+CAMERA_OFFSET_X = 3
+CAMERA_OFFSET_Y = 3
 
 # This is the height where the camera and laser are in focus.
-LASER_FOCUS_HEIGHT = 17.86
+LASER_FOCUS_HEIGHT = 5
 
 # How the processing code finds the area of interest. Units are in pixels.
 # The crop offsets specify the pixel that the box should be centered on.
@@ -63,9 +66,9 @@ FFMPEG_STOP_DELAY = 0.6
 # Only edit this if you need to.
 Z_HOP_HEIGHT = 0.75
 LAYER_HEIGHT = 0.25
-RETRACTION_DISTANCE = 0.5
-EXTRUSION_DISTANCE_PER_MM = 0.045899
-BOUNDING_BOX_LINE_WIDTH = 0.4 # May need adjustment. 
+RETRACTION_DISTANCE = 0.25
+EXTRUSION_DISTANCE_PER_MM = 0.28686875*NOZZLE_DIAMETER*NOZZLE_DIAMETER
+BOUNDING_BOX_LINE_WIDTH = 0.6 # May need adjustment. 
 
 # TODO: implement support for these.
 # If we know the FOV, we can attach actual units

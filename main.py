@@ -75,7 +75,7 @@ def main():
 
     gcode = f"""
     M109 S{HOTEND_TEMPERATURE};
-    CLEAN_NOZZLE
+    BLOBIFIER_CLEAN
     """
     gcode += generate_pa_tune_gcode(control, False)
     gcode += generate_pa_tune_gcode(calibrated)
