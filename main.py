@@ -12,8 +12,7 @@ import klipper.gcode as g
 import tempfile
 from pprint import pprint
 
-PA_START_VALUE = 0
-PA_STOP_VALUE = 0.06
+
 
 def generate_pa_results_for_pattern(pattern_info: PatternInfo)-> list[PaResult]:
     results = []
@@ -32,15 +31,17 @@ def generate_pa_results_for_pattern(pattern_info: PatternInfo)-> list[PaResult]:
 def main():
     calibration_pattern = PatternInfo(
         PA_START_VALUE, PA_STOP_VALUE,
-        30, 30,
-        10,
-        30, 4
+        PATTERN_START[0], PATTERN_START[1],
+        NUM_LINES,
+        PATTERN_WIDTH, PATTERN_SPACING
     )
 
-    g.send_gcode(PRINT_START)
+    if STANDALONE:
+        g.send_gcode(PRINT_START)
     g.send_gcode(generate_pa_tune_gcode(calibration_pattern))
     g.wait_until_printer_at_location(FINISHED_X, FINISHED_Y)
-    g.send_gcode(f"M104 S{HOTEND_IDLE_TEMP}; let the hotend cool")
+    if STANDALONE:
+        g.send_gcode(f"M104 S{HOTEND_IDLE_TEMP}; let the hotend cool")
 
     results = generate_pa_results_for_pattern(calibration_pattern)
         
@@ -63,16 +64,16 @@ def main():
 
     control = PatternInfo(
         0, 0,
-        65, 30,
-        10,
-        30, 4
+        PATTERN_START[0] + PATTERN_WIDTH + PATTERN_SPACING + BOUNDING_BOX_LINE_WIDTH*4, PATTERN_START[1],
+        NUM_LINES,
+        PATTERN_WIDTH, PATTERN_SPACING
     )
 
     calibrated = PatternInfo(
         best_pa_value, best_pa_value,
-        100, 30,
-        10,
-        30, 4
+        PATTERN_START[0] + PATTERN_WIDTH*2 + PATTERN_SPACING*2 + BOUNDING_BOX_LINE_WIDTH*8, PATTERN_START[1],
+        NUM_LINES,
+        PATTERN_WIDTH, PATTERN_SPACING
     )
 
 
@@ -83,7 +84,8 @@ def main():
     gcode += generate_pa_tune_gcode(control, False)
     gcode += generate_pa_tune_gcode(calibrated)
     g.send_gcode(gcode)
-    g.send_gcode("M104 S0; let the hotend cool")
+    if STANDALONE:
+        g.send_gcode("M104 S0; let the hotend cool")
     g.wait_until_printer_at_location(FINISHED_X, FINISHED_Y)
 
     control_results = generate_pa_results_for_pattern(control)
