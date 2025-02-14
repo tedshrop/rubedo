@@ -20,7 +20,7 @@ def generate_pa_tune_gcode(info: PatternInfo, finished_printing=True):
         G21 ; Millimeter units
         G90 ; Absolute XYZ
         M83 ; Relative E
-        SET_VELOCITY_LIMIT ACCEL=3000 ACCEL_TO_DECEL=1500
+        SET_VELOCITY_LIMIT ACCEL={ACCELERATION} MINIMUM_CRUISE_RATIO=0.5
         G92 E0 ;
         M106 S0 ; set fan speed to 0
 

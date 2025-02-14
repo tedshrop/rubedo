@@ -53,6 +53,9 @@ def main():
     print()
     print(f"Recommended PA Value: {best_pa_value}, with a score of {sorted_results[0][0]}")
     print()
+    g.send_gcode("RESPOND TYPE=command MSG='{sorted_results}'")
+    g.send_gcode("RESPOND TYPE=command MSG='Recommended PA Value: {best_pa_value}, with a score of {sorted_results[0][0]}'")
+
     g.send_gcode(f"SET_PRESSURE_ADVANCE ADVANCE={best_pa_value}")
 
     if not VALIDATE_RESULTS:
@@ -100,7 +103,8 @@ def main():
     print(f"Average Control Score: {control_average}")
     print(f"Average Calibrated Score: {calibrated_average}")
     print()
-
+    g.send_gcode("RESPOND TYPE=command MSG='Control:{control_scores} Calibrated:{calibrated_scores}'")
+    g.send_gcode("RESPOND TYPE=command MSG='Average Control Score:{control_average} Average Calibrated Score:{calibrated_average}'")
 
 if __name__=="__main__":
     main()
