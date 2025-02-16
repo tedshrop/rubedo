@@ -1,9 +1,8 @@
-# Connection details for communicating with the printer's moonraker API.
-HOST = '127.0.0.1'
-WS_PORT = 7125
+#General Settings
+HOST = '127.0.0.1'  #Moonraker IP. Use 127.0.0.1 if using local machine.
+WS_PORT = 7125      #Moonraker Websocket port. Default is 7125.
 
-# This will print a calibrated + control pattern and measure the % improvement after tuning
-VALIDATE_RESULTS = False 
+
 
 #   ██████╗  █████╗ ████████╗████████╗███████╗██████╗ ███╗   ██╗
 #   ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗████╗  ██║
@@ -20,7 +19,7 @@ PATTERN_START = (30, 30)                    # Set at runtime with PATTERN_START=
 PATTERN_SPACING = 10                        # Set at runtime with PATTERN_SPACING=
 PATTERN_WIDTH = 30                          # Set at runtime with PATTERN_WIDTH=
 NUM_LINES = 10                              # Set at runtime with NUM_LINES=
-
+VALIDATE_RESULTS = False                    # Set at runtime with VALIDATE=
 
 
 #   ██████╗ ██████╗ ██╗███╗   ██╗████████╗
@@ -32,24 +31,28 @@ NUM_LINES = 10                              # Set at runtime with NUM_LINES=
 #████████████████████████████████████████████
 
 BUILD_PLATE_TEMPERATURE = 110               # Set at runtime with BED_TEMP=
-HOTEND_TEMPERATURE = 250                    #EXTRUDER_TEMP
+HOTEND_TEMPERATURE = 250                    # Set at runtime with EXTRUDER_TEMP
 HOTEND_IDLE_TEMP = 200              
-TOOL = 0                                    #TOOL=               
-FINISHED_X = 80                             #FINISHED_X=   
-FINISHED_Y = 350                            #FINISHED_Y=
-NOZZLE_DIAMETER = 0.6                       #NOZZLE_DIAMETER=
-SPEED = 150
-ACCELERATION = 3000
-MULTIPLIER = 1
-Z_HOP_HEIGHT = 0.75
-LAYER_HEIGHT = 0.25
-RETRACTION_DISTANCE = 0.25
-BOUNDING_BOX_LINE_WIDTH = NOZZLE_DIAMETER # May need adjustment. 
+TOOL = 0                                    # Set at runtime with TOOL=               
+FINISHED_X = 80                             # Set at runtime with FINISHED_X=   
+FINISHED_Y = 350                            # Set at runtime with FINISHED_Y=
+NOZZLE_DIAMETER = 0.6                       # Set at runtime with NOZZLE_DIAMETER=
+SPEED = 150                                 # Set at runtime with SPEED=
+ACCELERATION = 3000                         # Set at runtime with ACCELERATION=
+MULTIPLIER = 1                              # Set at runtime with FLOW=
+Z_HOP_HEIGHT = 0.75                         # Set at runtime with HOP=
+LAYER_HEIGHT = 0.25                         # Set at runtime with LAYER_HEIGHT=
+RETRACTION_DISTANCE = 0.5                  # Set at runtime with RETRACTION_DISTANCE=
+BOUNDING_BOX_LINE_WIDTH = NOZZLE_DIAMETER  # May need adjustment. 
 STANDALONE = True 
+
+# Calculate the area that the print will cover.
 if VALIDATE_RESULTS:
     AREA_END = (PATTERN_START[0] + PATTERN_WIDTH*3 + BOUNDING_BOX_LINE_WIDTH*12, PATTERN_START[1] + NUM_LINES * PATTERN_SPACING + BOUNDING_BOX_LINE_WIDTH*4)
 else:
     AREA_END = (PATTERN_START[0] + PATTERN_WIDTH + BOUNDING_BOX_LINE_WIDTH*4, PATTERN_START[1] + NUM_LINES * PATTERN_SPACING + BOUNDING_BOX_LINE_WIDTH*4)
+
+
 PRINT_START = f"""
 M104 S{HOTEND_IDLE_TEMP}; preheat nozzle while waiting for build plate to get to temp
 M140 S{BUILD_PLATE_TEMPERATURE};
@@ -71,17 +74,17 @@ SET_PRINT_STATS_INFO TOTAL_LAYER=1
 #██████████████████████████████████████████████████████████
 # 
 #  Information about the USB camera mounted to the hotend.
-VIDEO_DEVICE = "/dev/video2"
+VIDEO_DEVICE = "/dev/v4l/by-id/usb-3dO_3DO_USB_CAMERA_V2_3DO_video-index0"
 VIDEO_WIDTH = "1920"
 VIDEO_HEIGHT = "1080"
 FRAMERATE = "30"
 # The camera's distance from the nozzle.
 # This tells the recording code how to center the line within the camera's field of view.
 # The offsets are in mm.
-CAMERA_OFFSET_X = 3
+CAMERA_OFFSET_X = 0
 CAMERA_OFFSET_Y = 3
 # The height of the laser above the bed. This is used to focus the camera.
-LASER_FOCUS_HEIGHT = 5
+LASER_FOCUS_HEIGHT = 8.3 # mm
 
 # How the processing code finds the area of interest. Units are in pixels.
 # The crop offsets specify the pixel that the box should be centered on.
@@ -142,7 +145,7 @@ for arg in sys.argv[1:]:
     elif arg.startswith('SPEED='):
         SPEED = int(arg.split('=')[1])
         handled_args.add(arg)
-    elif arg.startswith('Z_HOP_HEIGHT='):
+    elif arg.startswith('HOP='):
         Z_HOP_HEIGHT = float(arg.split('=')[1])
         handled_args.add(arg)
     elif arg.startswith('LAYER_HEIGHT='):
@@ -157,7 +160,7 @@ for arg in sys.argv[1:]:
     elif arg.startswith('STOP='):
         PA_STOP_VALUE = float(arg.split('=')[1])
         handled_args.add(arg)
-    elif arg.startswith('MULTIPLIER='):
+    elif arg.startswith('FLOW='):
         MULTIPLIER = float(arg.split('=')[1])
         handled_args.add(arg)
     elif arg.startswith('SAVE='):
