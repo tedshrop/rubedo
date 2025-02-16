@@ -3,13 +3,27 @@ import cv2
 import numpy as np
 
 def crop_frame(frame):
+    # Print the shape of the frame before cropping
+    print(f"Original frame shape: {frame.shape}")
+
     mid_y = int(VIDEO_HEIGHT) // 2 + int(CROP_Y_OFFSET)
     mid_x = int(VIDEO_WIDTH) // 2 + int(CROP_X_OFFSET)
     half_y = int(CROP_FRAME_SIZE_Y) // 2
     half_x = int(CROP_FRAME_SIZE_X) // 2
-    frame = frame[mid_y-half_y:mid_y+half_y, mid_x-half_x:mid_x+half_x]
-    return frame
 
+    # Print the calculated values
+    print(f"mid_y: {mid_y}, mid_x: {mid_x}, half_y: {half_y}, half_x: {half_x}")
+
+    # Ensure the cropping indices are within the frame dimensions
+    if mid_y - half_y < 0 or mid_y + half_y > frame.shape[0] or mid_x - half_x < 0 or mid_x + half_x > frame.shape[1]:
+        raise ValueError("Cropping indices are out of frame bounds")
+
+    frame = frame[mid_y-half_y:mid_y+half_y, mid_x-half_x:mid_x+half_x]
+
+    # Print the shape of the frame after cropping
+    print(f"Cropped frame shape: {frame.shape}")
+
+    return frame
 
 def preprocess_frame(frame):
     if frame is None or frame.size == 0:
