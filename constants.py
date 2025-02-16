@@ -74,7 +74,7 @@ SET_PRINT_STATS_INFO TOTAL_LAYER=1
 #██████████████████████████████████████████████████████████
 # 
 #  Information about the USB camera mounted to the hotend.
-VIDEO_DEVICE = "/dev/v4l/by-id/usb-3dO_3DO_USB_CAMERA_V2_3DO_video-index0"
+VIDEO_DEVICE = "/dev/v4l/by-id/usb-3DO_3DO_USB_CAMERA_V2_3DO-video-index0"
 VIDEO_WIDTH = "1920"
 VIDEO_HEIGHT = "1080"
 FRAMERATE = "30"
