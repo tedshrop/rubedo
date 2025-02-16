@@ -75,8 +75,8 @@ SET_PRINT_STATS_INFO TOTAL_LAYER=1
 # 
 #  Information about the USB camera mounted to the hotend.
 VIDEO_DEVICE = "/dev/v4l/by-id/usb-3DO_3DO_USB_CAMERA_V2_3DO-video-index0"
-VIDEO_WIDTH = "1920"
-VIDEO_HEIGHT = "1080"
+VIDEO_WIDTH = "2592"
+VIDEO_HEIGHT = "1944"
 FRAMERATE = "30"
 # The camera's distance from the nozzle.
 # This tells the recording code how to center the line within the camera's field of view.
