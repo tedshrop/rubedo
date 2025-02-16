@@ -50,8 +50,8 @@ def generate_pa_tune_gcode(info: PatternInfo, finished_printing=True):
         # TODO: the lines could be printed in alternating directions to 
         #   eliminate the need for retractions and also decrease print time.
         gcode += f"""
-            SET_PRESSURE_ADVANCE ADVANCE={pa_value} ; set Pressure Advance
-            M117 Testing Pressure Advance at: {pa_value}
+            SET_PRESSURE_ADVANCE ADVANCE={round(pa_value / 0.005) * 0.005} ; set Pressure Advance
+            M117 Testing Pressure Advance at: {round(pa_value / 0.005) * 0.005}
             G1 X-{info.line_length} Y{info.spacing} F30000        ; move to start position
             G1 Z{-Z_HOP_HEIGHT} F300           ; move to layer height
             G1 E{RETRACTION_DISTANCE} F1800           ; un-retract

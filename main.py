@@ -28,19 +28,25 @@ def generate_pa_results_for_pattern(pattern_info: PatternInfo)-> list[PaResult]:
     return results
 
 
-def main():
+def main():  
     calibration_pattern = PatternInfo(
         PA_START_VALUE, PA_STOP_VALUE,
         PATTERN_START[0], PATTERN_START[1],
         NUM_LINES,
         PATTERN_WIDTH, PATTERN_SPACING
     )
-
+    g.send_gcode("RESPOND TYPE=command MSG='Running Rubedo Pressure Advance Calibration:'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='Testing Range: {PA_START_VALUE} to {PA_STOP_VALUE}'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='Validating Results: {VALIDATE_RESULTS}'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='Standalone: {STANDALONE}'")
+    
     if STANDALONE:
+        g.send_gcode("RESPOND TYPE=command MSG='Executing START_PRINT Gcode'")
         g.send_gcode(PRINT_START)
+    g.send_gcode("RESPOND TYPE=command MSG='Executing START_PRINT Gcode'")
     g.send_gcode(generate_pa_tune_gcode(calibration_pattern))
     g.wait_until_printer_at_location(FINISHED_X, FINISHED_Y)
-    if STANDALONE:
+    if STANDALONE and not VALIDATE_RESULTS:
         g.send_gcode(f"M104 S{HOTEND_IDLE_TEMP}; let the hotend cool")
 
     results = generate_pa_results_for_pattern(calibration_pattern)
@@ -54,12 +60,14 @@ def main():
     print()
     print(f"Recommended PA Value: {best_pa_value}, with a score of {sorted_results[0][0]}")
     print()
-    g.send_gcode("RESPOND TYPE=command MSG='{sorted_results}'")
-    g.send_gcode("RESPOND TYPE=command MSG='Recommended PA Value: {best_pa_value}, with a score of {sorted_results[0][0]}'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='{sorted_results}'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='Recommended PA Value: {best_pa_value}, with a score of {sorted_results[0][0]}'")
 
     g.send_gcode(f"SET_PRESSURE_ADVANCE ADVANCE={best_pa_value}")
 
     if not VALIDATE_RESULTS:
+        g.send_gcode("MMU_END")
+        g.send_gcode("END_PRINT")
         return
 
     control = PatternInfo(
@@ -85,7 +93,7 @@ def main():
     gcode += generate_pa_tune_gcode(calibrated)
     g.send_gcode(gcode)
     if STANDALONE:
-        g.send_gcode("M104 S0; let the hotend cool")
+        g.send_gcode(f"M104 S{HOTEND_IDLE_TEMP}; let the hotend cool")
     g.wait_until_printer_at_location(FINISHED_X, FINISHED_Y)
 
     control_results = generate_pa_results_for_pattern(control)
@@ -105,8 +113,10 @@ def main():
     print(f"Average Control Score: {control_average}")
     print(f"Average Calibrated Score: {calibrated_average}")
     print()
-    g.send_gcode("RESPOND TYPE=command MSG='Control:{control_scores} Calibrated:{calibrated_scores}'")
-    g.send_gcode("RESPOND TYPE=command MSG='Average Control Score:{control_average} Average Calibrated Score:{calibrated_average}'")
-
+    g.send_gcode(f"RESPOND TYPE=command MSG='Control:{control_scores} Calibrated:{calibrated_scores}'")
+    g.send_gcode(f"RESPOND TYPE=command MSG='Average Control Score:{control_average} Average Calibrated Score:{calibrated_average}'")
+    g.send_gcode("MMU_END")
+    g.send_gcode("END_PRINT")
+    
 if __name__=="__main__":
     main()
