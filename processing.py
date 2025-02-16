@@ -6,8 +6,8 @@ def crop_frame(frame):
     # Print the shape of the frame before cropping
     print(f"Original frame shape: {frame.shape}")
 
-    mid_y = int(VIDEO_HEIGHT) // 2 + int(CROP_Y_OFFSET)
-    mid_x = int(VIDEO_WIDTH) // 2 + int(CROP_X_OFFSET)
+    mid_y = int(VIDEO_HEIGHT) // 2 + int(CROP_Y_OFFSET) //2
+    mid_x = int(VIDEO_WIDTH) // 2 + int(CROP_X_OFFSET) //2
     half_y = int(CROP_FRAME_SIZE_Y) // 2
     half_x = int(CROP_FRAME_SIZE_X) // 2
 
