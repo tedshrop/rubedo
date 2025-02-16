@@ -5,13 +5,15 @@ import numpy as np
 def crop_frame(frame):
     mid_y = int(VIDEO_HEIGHT) // 2 + int(CROP_Y_OFFSET)
     mid_x = int(VIDEO_WIDTH) // 2 + int(CROP_X_OFFSET)
-    half_y = int(CROP_FRAME_SIZE_Y) / 2
-    half_x = int(CROP_FRAME_SIZE_X) / 2
-    frame = frame[int(mid_y-half_y):int(mid_y+half_y), int(mid_x-half_x):int(mid_x+half_x)]
+    half_y = int(CROP_FRAME_SIZE_Y) // 2
+    half_x = int(CROP_FRAME_SIZE_X) // 2
+    frame = frame[mid_y-half_y:mid_y+half_y, mid_x-half_x:mid_x+half_x]
     return frame
 
 
 def preprocess_frame(frame):
+    if frame is None or frame.size == 0:
+        raise ValueError("Empty frame passed to preprocess_frame")
     lowerb = np.array([0, 0, 50])
     upperb = np.array([255, 255, 255])
     red_line = cv2.inRange(frame, lowerb, upperb)
