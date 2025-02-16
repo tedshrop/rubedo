@@ -88,13 +88,13 @@ LASER_FOCUS_HEIGHT = 8.3 # mm
 
 # How the processing code finds the area of interest. Units are in pixels.
 # The crop offsets specify the pixel that the box should be centered on.
-CROP_X_OFFSET = 220
+CROP_X_OFFSET = 1500
 # In my case, the crop Y offset should be zero, but my offset Y value above is slightly off.
 # You can kind of tweak these if you find that things aren't quite right.
-CROP_Y_OFFSET = 11
+CROP_Y_OFFSET = 1500
 # How big the area around the laser should be cropped to.
-CROP_FRAME_SIZE_X = 45
-CROP_FRAME_SIZE_Y = 60
+CROP_FRAME_SIZE_X = 250
+CROP_FRAME_SIZE_Y = 250
 
 # Sometimes ffmpeg is slow to close. If we start moving too early, 
 # we might accidentally record stuff we don't want to.
