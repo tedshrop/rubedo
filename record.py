@@ -7,18 +7,18 @@ from pathlib import Path
 from constants import *
 
 ffmpeg_cmd = [
-    "ffmpeg",
-    "-y",
-    "-f",
-    "v4l2",
-    "-framerate",
-    FRAMERATE,
-    "-video_size",
-    f"{VIDEO_WIDTH}x{VIDEO_HEIGHT}",
-    "-input_format",
-    "mjpeg",
-    "-i",
-    VIDEO_DEVICE,
+    "ffmpeg", 
+    "-y", 
+    "-f", 
+    "v4l2", 
+    "-framerate", 
+    FRAMERATE, 
+    "-video_size", 
+    f"{VIDEO_WIDTH}x{VIDEO_HEIGHT}", 
+    "-input_format", 
+    "mjpeg", 
+    "-i", 
+    VIDEO_DEVICE
     ]
 
 

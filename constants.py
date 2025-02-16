@@ -99,8 +99,8 @@ CROP_FRAME_SIZE_Y = 250
 # Sometimes ffmpeg is slow to close. If we start moving too early, 
 # we might accidentally record stuff we don't want to.
 # I would like to eliminate these eventually by improving the video recording code.
-FFMPEG_START_DELAY = 0.5
-FFMPEG_STOP_DELAY = 0.6
+FFMPEG_START_DELAY = 1.5
+FFMPEG_STOP_DELAY = 1.5
 
 
 
