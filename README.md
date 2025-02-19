@@ -68,6 +68,26 @@ Here's the process to get the laser installed:
 
 * Go through the `constants.py` file, and adjust whatever you need to in order to set the defaults the way you like. This can always be changed later at runtime.
 
+## Running the Script
+
+* Standalone: The script can be started by using the gcode macro RUBEDO.
+* As part of your startup script (in your slicer, don't put in your PRINT_START macro) by adding "RUBEDO STANDALONE=False"
+* You can call a set a bunch of variables by using gcode arguments. The options are as follows:
+
+BED_TEMP
+EXTRUDER_TEMP
+TOOL
+FINISHED_X - Park location
+FINISHED_Y - Park location
+NOZZLE_DIAMETER
+SPEED
+FLOW 
+ACCELERATION
+HOP
+LAYER_HEIGHT
+RETRACTION_DISTANCE
+
+You can save the variables that you call as the new default if you add SAVE=1 to the arguments.
 
 # Code Organization
 The code that allows for hands free calibration is in `main.py`. Once you've configured everything correctly, you should be able to run the script and get recommended pressure advance value.  If you have `VALIDATE_RESULTS` enabled, the printer will print another two patterns, one w/ PA disabled, and another with the selected value. Most users probably won't want this, so feel free to turn it off.  It also makes it hard to find the recommended value in the scripts output.

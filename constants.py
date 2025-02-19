@@ -44,7 +44,9 @@ Z_HOP_HEIGHT = 0.75                         # Set at runtime with HOP=
 LAYER_HEIGHT = 0.25                         # Set at runtime with LAYER_HEIGHT=
 RETRACTION_DISTANCE = 0.5                  # Set at runtime with RETRACTION_DISTANCE=
 BOUNDING_BOX_LINE_WIDTH = NOZZLE_DIAMETER  # May need adjustment. 
-STANDALONE = True 
+STANDALONE = True                           # Set at runtime with STANDALONE=False
+#Overwrite these variables by using SAVE=1 in the command line.
+
 
 # Calculate the area that the print will cover.
 if VALIDATE_RESULTS:
