@@ -8,7 +8,7 @@ I've modified the code to expose additional variables that can be set both in th
 
 I've also modified the setup to use the existing 3do nozzle cam, and mount the laser behind the stealthburner out of the way (unless you have a blobifier).
 
-<img src="<graphics/6_Macros.jpg>" alt="Printer with the system installed" width=500px>
+<img src="graphics/6_Macros.jpg" alt="Printer with the system installed" width=500px>
 *The system installed on my printer*
 
 ![Calibration pattern compared with the control and results](graphics/calibration_control_calibrated.png)
