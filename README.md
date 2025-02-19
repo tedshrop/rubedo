@@ -9,12 +9,14 @@ I've modified the code to expose additional variables that can be set both in th
 I've also modified the setup to use the existing 3do nozzle cam, and mount the laser behind the stealthburner out of the way (unless you have a blobifier).
 
 <img src="graphics/6_Macros.jpg" alt="Printer with the system installed" height=600px>
+
 *The system installed on my printer*
 
 
 
-![Calibration pattern compared with the control and results](graphics/calibration_control_calibrated.png)
+
 <img src="graphics/calibration_control_calibrated.png" alt="Calibration pattern compared with the control and results" width=400px>
+
 *On the left is the pattern that was scanned. The middle pattern shows the pattern printed with pressure advance disabled, and the pattern on the right shows a pattern printed with the calibrated value.*
 
 ***
@@ -35,17 +37,17 @@ Here's the process to get the laser installed:
 
 * Step 0 - Print the mount
 * Step 1 - Flip it up on it's face and heat your bed 
-<img src="graphics/1_Heat.jpg" alt="Laser mount oriented lens-side down on print bed" width=400px> 
+<img src="graphics/1_Heat.jpg" alt="Laser mount oriented lens-side down on print bed" width=300px> 
 
 * Step 2 - When the print is hot, insert the laser module with the lens oriented as shown below
-<img src="graphics/2_Insert.jpg" alt="Laser module inside of print" width=400px> 
+<img src="graphics/2_Insert.jpg" alt="Laser module inside of print" width=300px> 
 
 * Step 3 - Remove the cylindrical cover of the laser module, then replace and resolder the wires (they're dinky) and install it on the back of the Stealthburner.
-<img src="graphics/3_Install.jpg" alt="Module installed with loose wires" width=400px> 
+<img src="graphics/3_Install.jpg" alt="Module installed with loose wires" width=300px> 
 
 * Step 4 - Focus your laser:  Turn your printer on, move it to ~8mm from the bed and look through your nozzle camera. Power the laser with a 2.5-5V source (coin cell batter works well). Rotate the laser within the lens body in order to focus it perfectly to the bed.
 * Step 5 - Route your wires to any 5v fan output. It's possible to use a 12v or 24v output if you put the appropriate resistor in series. If you're not familiar with that, do a google search for LED resistor calculator.
-<img src="graphics/5_Route.jpg" alt="Module installed with wires tightly entering Stealthburner" width=400px> 
+<img src="graphics/5_Route.jpg" alt="Module installed with wires tightly entering Stealthburner" width=300px> 
 
 
 ## SOFTWARE INSTALLATION
