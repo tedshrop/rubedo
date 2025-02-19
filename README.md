@@ -74,18 +74,18 @@ Here's the process to get the laser installed:
 * As part of your startup script (in your slicer, don't put in your PRINT_START macro) by adding "RUBEDO STANDALONE=False"
 * You can call a set a bunch of variables by using gcode arguments. The options are as follows:
 
-BED_TEMP
-EXTRUDER_TEMP
-TOOL
-FINISHED_X - Park location
-FINISHED_Y - Park location
-NOZZLE_DIAMETER
-SPEED
-FLOW 
-ACCELERATION
-HOP
-LAYER_HEIGHT
-RETRACTION_DISTANCE
+### BED_TEMP
+### EXTRUDER_TEMP
+### TOOL
+### FINISHED_X - Park location
+### FINISHED_Y - Park location
+### NOZZLE_DIAMETER
+### SPEED
+### FLOW 
+### ACCELERATION
+### HOP
+### LAYER_HEIGHT
+### RETRACTION_DISTANCE
 
 You can save the variables that you call as the new default if you add SAVE=1 to the arguments.
 
