@@ -1,8 +1,14 @@
-# Rubedo
-## A tool for automatically calibrating pressure advance.
-Do you hate manually tuning pressure advance?  Me too!  This script can use a line laser and camera that are attached to your printer's toolhead to generated a 3D model of a pressure advance calibration pattern, and estimate how badly each line is deformed. We can pick the best one, and use this as our pressure advance value.
+# Rubedo - Tedshrop Fork
+## A tool for automatically calibrating pressure advance at runtime.
+This tool is an elaboration on the work done by furrysalamander. The original version can be found [here](https://github.com/furrysalamander/rubedo).
 
-![Printer with the system installed](graphics/COV_6803.jpg)
+Most of the code is still original, most of the rest of this readme is still original. I will be updating it as I expand the functionality and then rewrite this whole section.
+
+I've modified the code to expose additional variables that can be set both in the constants.py file, and at runtime through gcode macro arguments.
+
+I've also modified the setup to use the existing 3do nozzle cam, and mount the laser behind the stealthburner out of the way (unless you have a blobifier).
+
+![Printer with the system installed](graphics/6_Macros.jpg)
 
 *The system installed on my printer*
 
@@ -20,36 +26,41 @@ This tool is still very much experimental. I hope that someday it will grow to b
 * A high quality USB camera. I used the 1080p nozzle camera from 3DO. The exact model I have is no longer available for purchase, [but they do have a 4k version](https://3do.dk/59-dyse-kamera). You will need to adjust several of the constants in `constants.py` folder to adjust the system to work with whatever camera you choose. The most important thing here is that the camera can focus on things at close distances. I think it might be possible to get a modified endoscope working with the system, but I tried one without modifications and I just couldn't get enough detail to make this work well at the default focus distance.
 * A line laser, preferably with an adjustable focus. I tested a fixed focus laser earlier on, but the beam was super thick and there was no way to adjust it. I have a laser like [this](https://www.amazon.com/module-Industrial-Module-adjustable-point-2packs/dp/B0BX6Q9FD8/). It's capable of focusing at a fairly close distance, though I had to put some hot glue on the lens to keep it from rotating over time since it's fairly loose at the distances I'm using it at.  Also, the outer edges of the line are poorly focused because they're further away than the center of the line, but it hasn't been a huge issue since it's just important that the very center of the beam is very thin.
 * `LASER_ON` and `LASER_OFF` macros. I have my laser connected to the SB2040 PCB on my toolhead. I used one of the 5v fan outputs, and it works fairly well.
-* Some sort of a mount for your USB camera and laser. I am using the mount `3DO_Mount_v2.step` located in the `camera_mounts` directory. If you do not use this exact mount, you will need to adjust the constants for the X and Y camera offset.  In addition, you will need to ensure that the laser is at a 45° angle from the camera. Ideally, both the camera and laser will be most in focus exactly where the laser passes through the center of the camera's field of view. This was not the case with my hardware, so I have shift the area my code analyzes to the side a bit. If your camera is rotated differently than mine, it should be fairly easy to add another parameter to rotate the video feed, but I have not implemented that yet so you will need to figure that out yourself. There might be a way to do that with the ffmpeg arguments used.
-* I *highly* recommend using a [Fabreeko P-Series Honey Badger build plate](https://www.fabreeko.com/collections/pei/products/honeybadger-p-series-smooth-black-pei-beds?variant=43432435056895). They have a matte black finish that pairs with the laser extremely well. I got the most consistent results when using one. If you can't get one, then either the textured Honey Badger build plate, or a regular smooth PEI sheet will work, just not nearly as well.  You can see how the laser shows up on each build surface in the image below.
+* The laser mounted on the toolhead. I am using the mount `Laser Mount V4.stl` located in the `camera_mounts` directory. Please note: My setup is for the UHF variant of the Stealthburner, and I haven't made a mount for the regular sized SB yet. If you modify it or make one for your application, please let me know if I can post it back here for others. If you're using the Blobifier, you'll need to reprint your shaker. You can find one that will clear the laser in `camera_mounts`.
 
-![laser on the different build surfaces](graphics/plates.jpg)
+***
+## HARDWARE INSTALLATION
 
-Here's a closeup of the system attached to my printer.  I didn't have screws that were the right length, so I'm using some friction fit printed bushings and double sided tape to keep things together.
+Here's the process to get the laser installed:
 
-![toolhead with system attached](graphics/laser_mount.jpg)
+* Step 0 - Print the mount
+* Step 1 - Flip it up on it's face and heat your bed 
+![Laser mount oriented lens-side down on print bed](graphics/1_Heat.jpg)
+* Step 2 - When the print is hot, insert the laser module with the lens oriented as shown below
+![Laser module inside of print](graphics/2_Insert.jpg)
+* Step 3 - Remove the cylindrical cover of the laser module, then replace and resolder the wires (they're dinky) and install it on the back of the Stealthburner.
+![Module installed with loose wires](graphics/3_Install.jpg)
+* Step 4 - Focus your laser:  Turn your printer on, move it to ~8mm from the bed and look through your nozzle camera. Power the laser with a 2.5-5V source (coin cell batter works well). Rotate the laser within the lens body in order to focus it perfectly to the bed.
+* Step 5 - Route your wires to any 5v fan output. It's possible to use a 12v or 24v output if you put the appropriate resistor in series. If you're not familiar with that, do a google search for LED resistor calculator.
+![Module installed with wires tightly entering Stealthburner](graphics/5_Route.jpg)
 
-## On whatever device you want to run the calibration from:
-* Install ffmpeg
-* Install the following python modules: 
+## SOFTWARE INSTALLATION
+
+* Install a few  dependencies:
     ```
-    opencv-python-headless matplotlib aiohttp websocket-client
+    sudo apt install ffmpeg python3-opencv python3-matplotlib python3-aiohttp python3-websocket
+    cd ~
+    git clone https://github.com/tedshrop/rubedo.git
     ```
-* Clone this repository
-* Go through the `constants.py` file, and adjust whatever you need to in order to make it match the way your printer is configured. 
+* copy rubedo_macros.cfg to your printer configuration folder and put the following at the top of your printer.cfg. Go through and set the PIN# for the laser as you have it installed on your machine.
+    ```
+    [include rubedo_macros.cfg]
+    ```
+* Do a firmware restart. You should now be able to test your laser by using the LASER_ON and LASER_OFF macros.
+* Turn your laser on and open the camera image on mainsail/fluidd. Slide a piece of first-laser filament into view (like a purge line or brim) roughly 3mm in front of the nozzle, or wherever it's perfectly in focus. On your browser, right click the camera image and save it. Open in microsoft paint or any other image editing software to determine what the crop should be. In my image for example, the crop was 250px by 250px, starting from 1500,1500.
+![View of the laser on filament](graphics/7_Crop.jfif)
+* Go through the `constants.py` file, and adjust whatever you need to in order to set the defaults the way you like. This can always be changed later at runtime.
 
-### Configuring constants
-Honestly, this is going to be a bit tricky, and is probably the most brittle part of the process.  Some of the config options, such as the camera X and Y offset are fairly straightforward. However, the crop settings are crucial to getting the system to work well. These are used by the `crop_frame()` function in `processing.py`, and if the resulting frame does not clearly show the area where the laser is hitting the filament, then this will not work at all. 
-
-This image is what a cropped frame looks like on my machine. Perhaps I should shift the frame slightly further to the right. More experimentation needs to be performed to figure out exactly what the ideal setting is. The most important thing is that the camera should only see the line that it is currently scanning. You will need to take care to ensure that the line you're cropping to is not the wrong one.
-
-<img src="graphics/cropped.png" width="135" height="160">
-
-```
-TODO Add a simple script for calibrating this setting
-```
-
-Assuming you are using an adjustable focus line laser, you will need to move the print head to the height where the print bed is perfectly in focus. Then, you will need to adjust the focus of the line laser until the laser beam is as thin as you can get it. Make sure that the beam is also perfectly parallel with the Y axis. This is necessary in order to get a good scan data.
 
 # Code Organization
 The code that allows for hands free calibration is in `main.py`. Once you've configured everything correctly, you should be able to run the script and get recommended pressure advance value.  If you have `VALIDATE_RESULTS` enabled, the printer will print another two patterns, one w/ PA disabled, and another with the selected value. Most users probably won't want this, so feel free to turn it off.  It also makes it hard to find the recommended value in the scripts output.
@@ -77,42 +88,3 @@ This file will print 27 copies of the calibration pattern, scan all of them, and
 ### `generate_report_data.py`
 This script consumes the files generated by the `generate_bulk_scans.py` script, and generates height map visualizations for each line that was scanned. In addition, it generates charts that aggregate the data from all scans to visualize the overal consistency of the calibration process.
 
-# Visualization
-Here are some heightmaps from lines that I scanned while working on this project.  They're a little bit squished together because the columns actually represent video frames, and not pixels or millimeters.
-
-![0.13 line](graphics/2_0.013_color.png)
-
-*PA at 0.13*
-
-![0.33 line](graphics/5_0.033_color.png)
-
-*PA at 0.33*
-
-![0.60 line](graphics/9_0.060_color.png)
-
-*PA at 0.60*
-
-![0.33 line 3D](graphics/5_0.033_3d.png)
-
-*Here's what the 0.33 line looks like in 3D*
-
-# Results
-I am working on a formal research paper that goes more in depth about the way the system works, but in the meantime, I have a video on youtube that gives an overview of everything.
-
-# Additional Information
-Here's a youtube video I made with more information:
-
-[![Rubedo video overview](https://img.youtube.com/vi/c1hrP0gduRU/0.jpg)](https://www.youtube.com/watch?v=c1hrP0gduRU)
-
-If you think this project is cool, there are a bunch of us on the Alchemical3D discord server that are working on a printer that will use this system.  In addition, we are excited about the prospect of using it to calibrate other things, such as extrusion multiplier or even bed mesh. Feel free to check it out:
-
-[https://discord.gg/ByyEByP7hp](https://discord.gg/ByyEByP7hp)
-
-Thank you to [Fabreeko](https://www.fabreeko.com/) for providing two Honey Badger build plates for testing with the system! They helped tremendously, and resulted in significantly more consistent performance.
-
-Also, thank you to [3DO](https://3do.dk/) for providing a USB Nozzle Camera. The picture quality was significantly better than some of the other cameras I tested, and this project wouldn't have been possible without it.
-
-# Support This Project
-Like this project?  Feel free to make a donation.
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L3L63ISSH)
