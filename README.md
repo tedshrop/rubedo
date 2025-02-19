@@ -77,8 +77,10 @@ Here's the process to get the laser installed:
 ### BED_TEMP
 ### EXTRUDER_TEMP
 ### TOOL
-### FINISHED_X - Park location
-### FINISHED_Y - Park location
+### FINISHED_X 
+Park location
+### FINISHED_Y 
+Park location
 ### NOZZLE_DIAMETER
 ### SPEED
 ### FLOW 
@@ -88,6 +90,8 @@ Here's the process to get the laser installed:
 ### RETRACTION_DISTANCE
 
 You can save the variables that you call as the new default if you add SAVE=1 to the arguments.
+
+***
 
 # Code Organization
 The code that allows for hands free calibration is in `main.py`. Once you've configured everything correctly, you should be able to run the script and get recommended pressure advance value.  If you have `VALIDATE_RESULTS` enabled, the printer will print another two patterns, one w/ PA disabled, and another with the selected value. Most users probably won't want this, so feel free to turn it off.  It also makes it hard to find the recommended value in the scripts output.
