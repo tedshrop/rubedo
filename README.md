@@ -8,11 +8,13 @@ I've modified the code to expose additional variables that can be set both in th
 
 I've also modified the setup to use the existing 3do nozzle cam, and mount the laser behind the stealthburner out of the way (unless you have a blobifier).
 
-<img src="graphics/6_Macros.jpg" alt="Printer with the system installed" width=500px>
+<img src="graphics/6_Macros.jpg" alt="Printer with the system installed" height=600px>
 *The system installed on my printer*
 
-![Calibration pattern compared with the control and results](graphics/calibration_control_calibrated.png)
 
+
+![Calibration pattern compared with the control and results](graphics/calibration_control_calibrated.png)
+<img src="graphics/calibration_control_calibrated.png" alt="Calibration pattern compared with the control and results" width=400px>
 *On the left is the pattern that was scanned. The middle pattern shows the pattern printed with pressure advance disabled, and the pattern on the right shows a pattern printed with the calibrated value.*
 
 ***
@@ -21,10 +23,9 @@ This tool is still very much experimental. I hope that someday it will grow to b
 ***
 
 ## Things you will need to setup on your printer:
-* Klipper + Moonraker. This project communicates with moonraker using websockets.
-* A high quality USB camera. I used the 1080p nozzle camera from 3DO. The exact model I have is no longer available for purchase, [but they do have a 4k version](https://3do.dk/59-dyse-kamera). You will need to adjust several of the constants in `constants.py` folder to adjust the system to work with whatever camera you choose. The most important thing here is that the camera can focus on things at close distances. I think it might be possible to get a modified endoscope working with the system, but I tried one without modifications and I just couldn't get enough detail to make this work well at the default focus distance.
-* A line laser, preferably with an adjustable focus. I tested a fixed focus laser earlier on, but the beam was super thick and there was no way to adjust it. I have a laser like [this](https://www.amazon.com/module-Industrial-Module-adjustable-point-2packs/dp/B0BX6Q9FD8/). It's capable of focusing at a fairly close distance, though I had to put some hot glue on the lens to keep it from rotating over time since it's fairly loose at the distances I'm using it at.  Also, the outer edges of the line are poorly focused because they're further away than the center of the line, but it hasn't been a huge issue since it's just important that the very center of the beam is very thin.
-* `LASER_ON` and `LASER_OFF` macros. I have my laser connected to the SB2040 PCB on my toolhead. I used one of the 5v fan outputs, and it works fairly well.
+* A Stealthburner (for now). It could be adapted to any system that has a nozzle camera.
+* A high quality USB camera. I use the 4K 3DO nozzle camera in the default Stealthburner location.
+* An adjustable focus line laser. I tested a fixed focus laser earlier on, but the beam was super thick and there was no way to adjust it. I have a laser like [this](https://www.amazon.ca/gp/product/B07L428BDG/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&th=1). 
 * The laser mounted on the toolhead. I am using the mount `Laser Mount V4.stl` located in the `camera_mounts` directory. Please note: My setup is for the UHF variant of the Stealthburner, and I haven't made a mount for the regular sized SB yet. If you modify it or make one for your application, please let me know if I can post it back here for others. If you're using the Blobifier, you'll need to reprint your shaker. You can find one that will clear the laser in `camera_mounts`.
 
 ***
@@ -34,14 +35,18 @@ Here's the process to get the laser installed:
 
 * Step 0 - Print the mount
 * Step 1 - Flip it up on it's face and heat your bed 
-![Laser mount oriented lens-side down on print bed](graphics/1_Heat.jpg)
+<img src="graphics/1_Heat.jpg" alt="Laser mount oriented lens-side down on print bed" width=400px> 
+
 * Step 2 - When the print is hot, insert the laser module with the lens oriented as shown below
-![Laser module inside of print](graphics/2_Insert.jpg)
+<img src="graphics/2_Insert.jpg" alt="Laser module inside of print" width=400px> 
+
 * Step 3 - Remove the cylindrical cover of the laser module, then replace and resolder the wires (they're dinky) and install it on the back of the Stealthburner.
-![Module installed with loose wires](graphics/3_Install.jpg)
+<img src="graphics/3_Install.jpg" alt="Module installed with loose wires" width=400px> 
+
 * Step 4 - Focus your laser:  Turn your printer on, move it to ~8mm from the bed and look through your nozzle camera. Power the laser with a 2.5-5V source (coin cell batter works well). Rotate the laser within the lens body in order to focus it perfectly to the bed.
 * Step 5 - Route your wires to any 5v fan output. It's possible to use a 12v or 24v output if you put the appropriate resistor in series. If you're not familiar with that, do a google search for LED resistor calculator.
-![Module installed with wires tightly entering Stealthburner](graphics/5_Route.jpg)
+<img src="graphics/5_Route.jpg" alt="Module installed with wires tightly entering Stealthburner" width=400px> 
+
 
 ## SOFTWARE INSTALLATION
 
@@ -57,7 +62,8 @@ Here's the process to get the laser installed:
     ```
 * Do a firmware restart. You should now be able to test your laser by using the LASER_ON and LASER_OFF macros.
 * Turn your laser on and open the camera image on mainsail/fluidd. Slide a piece of first-laser filament into view (like a purge line or brim) roughly 3mm in front of the nozzle, or wherever it's perfectly in focus. On your browser, right click the camera image and save it. Open in microsoft paint or any other image editing software to determine what the crop should be. In my image for example, the crop was 250px by 250px, starting from 1500,1500.
-![View of the laser on filament](graphics/7_Crop.jfif)
+<img src="graphics/7_Crop.jfif" alt="View of the laser on filament" width=400px> 
+
 * Go through the `constants.py` file, and adjust whatever you need to in order to set the defaults the way you like. This can always be changed later at runtime.
 
 
